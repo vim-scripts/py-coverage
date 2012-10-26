@@ -1,0 +1,130 @@
+*py-coverage.txt*       For Vim version 7.3       Last change: 2012 October 25
+
+
+                                 py-coverage
+
+
+==============================================================================
+1. About                                                         *py-coverage*
+
+This plugin integrates with Ned Batchelder's code coverage tool for Python
+(http://nedbatchelder.com/code/coverage/). After coverage data has been
+gathered, this plugin can be used to retrieve the results and present them in
+the relevant buffers.
+
+Source lines lacking coverage ("missing") may be indicated by directly
+highlighting the lines or by populating the quickfix or location lists. The
+function that retrieves the line numbers is also provided for low-level
+access.
+
+
+==============================================================================
+2. Installation and Use
+
+This plugin defines commands and a function, but no key mappings. Following is
+my local configuration, as an example:
+
+~/.vim/after/ftplugin/python/py-coverage.vim
+>
+    nnoremap <LocalLeader>mh :PyCoverageHighlight<CR>
+    nnoremap <LocalLeader>mc :PyCoverageClear<CR>
+    nnoremap <LocalLeader>mq :PyCoverageSetQuickfix<CR>
+    nnoremap <LocalLeader>ml :PyCoverageSetLoclist<CR>
+
+    highlight PyCoverageMissed gui=undercurl guisp=Orange
+<
+If you use the convention of always having your .coverage file at the root of
+your Python projects, then you may want to use an |autocmd| to show coverage
+information on new buffers whenever it's available.
+>
+    autocmd FileType python PyCoverageHighlight
+<
+This will add very little overhead in the case where no .coverage file can be
+found. When coverage data is available, it may take a second for the Python
+coverage tool to generate its report.
+
+
+==============================================================================
+3. Commands
+
+These commands all operate on the current buffer. Excepting
+|:PyCoverageClear|, they will all call |PyCoverageMissedLines| for the current
+buffer and process the line numbers as appropriate. If coverage data is not
+found for any reason, all commands will behave as if the file has 100%
+coverage (no missed lines). 
+
+
+:PyCoverageHighlight                                    *:PyCoverageHighlight*
+    Uses |matchadd()| to highlight each line in the current buffer that lacks
+    coverage. This uses the PyCoverageMissed highlight group, which is aliased
+    to Error by default.
+
+:PyCoverageClear                                            *:PyCoverageClear*
+    Reverses |:PyCoverageHighlight|, removing all matches in the
+    PyCoverageMissed group.
+
+:PyCoverageSetQuickfix                                *:PyCoverageSetQuickfix*
+    Populates the quickfix list with the list of missed lines.
+
+:PyCoverageSetLoclist                                  *:PyCoverageSetLoclist*
+    Populates the current window's location list with the list of missed lines
+    for its buffer.
+
+
+==============================================================================
+4. Functions
+
+PyCoverageMissedLines({buffer})                        *PyCoverageMissedLines*
+    Returns the |List| of line numbers that lack coverage in the given buffer.
+    {buffer} should be a valid argument to |bufname()|; it will usually be ""
+    or "%" for the current buffer.
+
+
+==============================================================================
+5. Configuration
+
+All configuration options have sensible defaults.
+
+g:py_coverage_bin                                          *g:py_coverage_bin*
+    This can be set to the coverage executable. Defaults to "coverage", which
+    we expect to find in your path.
+>
+    let g:py_coverage_bin = '/usr/local/bin/coverage'
+<
+g:py_coverage_dir                                          *g:py_coverage_dir*
+    Set this to the directory that contains the .coverage file with coverage
+    data. If this is unset, we'll search for it up the directory tree from the
+    target file.
+>
+    let g:py_coverage_dir = expand('~/')
+<
+
+==============================================================================
+6. License
+
+Copyright (c) 2012, Peter Sagerson
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
+
+- Redistributions of source code must retain the above copyright notice, this
+  list of conditions and the following disclaimer.
+
+- Redistributions in binary form must reproduce the above copyright notice,
+  this list of conditions and the following disclaimer in the documentation
+  and/or other materials provided with the distribution.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+
+ vim:tw=78:ts=4:ft=help:norl:

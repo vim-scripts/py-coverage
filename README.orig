@@ -1,0 +1,9 @@
+py-coverage integrates with Ned Batchelder's code coverage tool for Python
+(http://nedbatchelder.com/code/coverage/). After coverage data has been
+gathered, this plugin can be used to retrieve the results and present them in
+the relevant buffers.
+
+Source lines lacking coverage ("missing") may be indicated by directly
+highlighting the lines or by populating the quickfix or location lists. The
+function that retrieves the line numbers is also provided for low-level
+access.
