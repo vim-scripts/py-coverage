@@ -2,7 +2,7 @@
 " Python filetype plugin for marking code coverage.
 " Language:     Vim (ft=python)
 " Maintainer:   Peter Sagerson <psagers at ignorare dot net>
-" Version:      0.1.0
+" Version:      0.1.1
 " URL:          https://bitbucket.org/psagers/vim-py-coverage
 "
 
@@ -138,7 +138,9 @@ function! s:CoverageReport(sourcefile)
         let coverage_db = findfile('.coverage', fnamemodify(a:sourcefile, ':h') . ';')
         let &suffixesadd = suffixesadd_save
 
-        let coverage_dir = fnamemodify(coverage_db, ':h')
+        if coverage_db != ''
+            let coverage_dir = fnamemodify(coverage_db, ':h')
+        endif
     endif
 
     if coverage_dir != ''
